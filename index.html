@@ -909,7 +909,137 @@ Things to remember..."
         data-title="Shadow Operator"
         data-eyebrow="Creator Monetization"
       >
-        <!-- Shadow Operator content will go here -->
+       <div class="dashboard-grid">
+
+  <!-- Creator Pipeline -->
+  <article class="dashboard-card card-wide">
+
+    <div class="card-header">
+      <div>
+        <p class="eyebrow">Pipeline</p>
+        <h3>Creator CRM</h3>
+      </div>
+
+      <button
+        class="primary-button"
+        id="addCreatorButton"
+        type="button"
+      >
+        + Add Creator
+      </button>
+    </div>
+
+    <div class="pipeline-summary">
+
+      <div class="mini-stat">
+        <span>Total Creators</span>
+        <strong id="creatorTotal">0</strong>
+      </div>
+
+      <div class="mini-stat">
+        <span>Contacted</span>
+        <strong id="creatorContacted">0</strong>
+      </div>
+
+      <div class="mini-stat">
+        <span>Replies</span>
+        <strong id="creatorReplies">0</strong>
+      </div>
+
+      <div class="mini-stat">
+        <span>Clients</span>
+        <strong id="creatorClients">0</strong>
+      </div>
+
+    </div>
+
+  </article>
+
+  <!-- Quick Creator -->
+
+  <article class="dashboard-card">
+
+    <div class="card-header">
+      <div>
+        <p class="eyebrow">Quick Entry</p>
+        <h3>New Creator</h3>
+      </div>
+    </div>
+
+    <input
+      class="main-input"
+      id="creatorName"
+      type="text"
+      placeholder="Creator Name"
+    >
+
+    <input
+      class="main-input"
+      id="creatorPlatform"
+      type="text"
+      placeholder="Platform"
+    >
+
+    <input
+      class="main-input"
+      id="creatorFollowers"
+      type="number"
+      placeholder="Followers"
+    >
+
+    <button
+      class="primary-button full-button"
+      id="saveCreatorButton"
+      type="button"
+    >
+      Save Creator
+    </button>
+
+  </article>
+
+  <!-- Opportunity Score -->
+
+  <article class="dashboard-card">
+
+    <div class="card-header">
+      <div>
+        <p class="eyebrow">Potential</p>
+        <h3>Opportunity Score</h3>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      Once creator data is added, Mission Control will calculate a score to help prioritize outreach.
+    </div>
+
+  </article>
+
+  <!-- Creator List -->
+
+  <article class="dashboard-card card-wide">
+
+    <div class="card-header">
+      <div>
+        <p class="eyebrow">Database</p>
+        <h3>Creators</h3>
+      </div>
+    </div>
+
+    <div
+      id="creatorList"
+      class="opportunity-list"
+    >
+
+      <div class="empty-state compact-empty">
+        <span>👥</span>
+        <p>No creators added yet.</p>
+      </div>
+
+    </div>
+
+  </article>
+
+</div>
       </section>
 
       <!-- LEAD LIBRARY -->
