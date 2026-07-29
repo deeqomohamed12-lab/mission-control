@@ -1,1 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
 
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Mission Control — Deeqo's personal operating system."
+  >
+
+  <title>Mission Control</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- Mobile menu overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- =========================
+       SIDEBAR
+  ========================== -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-top">
+
+      <div class="brand">
+        <div class="brand-logo">MC</div>
+
+        <div class="brand-text">
+          <h1>Mission Control</h1>
+          <p>Build. Focus. Win.</p>
+        </div>
+      </div>
+
+      <button
+        class="close-sidebar"
+        id="closeSidebar"
+        type="button"
+        aria-label="Close menu"
+      >
+        ✕
+      </button>
+
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Main navigation">
+
+      <p class="nav-label">Command Center</p>
+
+      <button
+        class="nav-item active"
+        type="button"
+        data-section="home"
+      >
+        <span class="nav-icon">🏠</span>
+        <span>Home</span>
+      </button>
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="brain-dump"
+      >
+        <span class="nav-icon">🧠</span>
+        <span>Brain Dump</span>
+      </button>
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="voice-command"
+      >
+        <span class="nav-icon">🎤</span>
+        <span>Voice Command</span>
+      </button>
+
+      <p class="nav-label">Business</p>
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="shadow"
+      >
+        <span class="nav-icon">🎯</span>
+        <span>Shadow Operator</span>
+      </button>
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="lead-library"
+      >
+        <span class="nav-icon">👥</span>
+        <span>Lead Library</span>
+      </button>
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="deenas"
+      >
+        <span class="nav-icon">🚀</span>
+        <span>Deenas</span>
+      </button>
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="idea-vote"
+      >
+        <span class="nav-icon">💡</span>
+        <span>Idea Vote</span>
+      </button>
+
+      <p class="nav-label">Personal</p>
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="journal"
+      >
+        <span class="nav-icon">📖</span>
+        <span>Founder Journal</span>
+      </button>
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="faith"
+      >
+        <span class="nav-icon">🤲</span>
+        <span>Faith</span>
+      </button>
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="gym"
+      >
+        <span class="nav-icon">💪</span>
+        <span>Gym</span>
+      </button>
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="drama-center"
+      >
+        <span class="nav-icon">🛑</span>
+        <span>Drama Center</span>
+      </button>
+
+      <p class="nav-label">Intelligence</p>
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="connected-brain"
+      >
+        <span class="nav-icon">🔗</span>
+        <span>Connected Brain</span>
+      </button>
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="mission-replay"
+      >
+        <span class="nav-icon">📊</span>
+        <span>Mission Replay</span>
+      </button>
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="settings"
+      >
+        <span class="nav-icon">⚙️</span>
+        <span>Settings</span>
+      </button>
+
+    </nav>
+
+    <div class="sidebar-footer">
+
+      <div class="sidebar-progress">
+        <div class="sidebar-progress-top">
+          <span>Today's progress</span>
+          <strong id="sidebarProgressText">0%</strong>
+        </div>
+
+        <div class="progress-track">
+          <div
+            class="progress-fill"
+            id="sidebarProgressFill"
+          ></div>
+        </div>
+      </div>
+
+      <div class="profile-card">
+        <div class="profile-avatar">D</div>
+
+        <div class="profile-info">
+          <strong>Deeqo</strong>
+          <span>Founder Mode</span>
+        </div>
+
+        <span class="online-dot" title="Active"></span>
+      </div>
+
+    </div>
+
+  </aside>
+
+  <!-- =========================
+       MAIN APP
+  ========================== -->
+  <div class="app-shell">
+
+    <!-- Top header -->
+    <header class="topbar">
+
+      <div class="topbar-left">
+
+        <button
+          class="menu-button"
+          id="menuButton"
+          type="button"
+          aria-label="Open menu"
+        >
+          ☰
+        </button>
+
+        <div>
+          <p class="eyebrow" id="pageEyebrow">
+            Command Center
+          </p>
+
+          <h2 id="pageTitle">Good evening, Deeqo</h2>
+        </div>
+
+      </div>
+
+      <div class="topbar-actions">
+
+        <div class="global-search">
+          <span>🔍</span>
+
+          <input
+            id="globalSearch"
+            type="search"
+            placeholder="Search Mission Control..."
+            autocomplete="off"
+          >
+
+          <kbd>⌘ K</kbd>
+        </div>
+
+        <button
+          class="icon-button"
+          id="voiceQuickButton"
+          type="button"
+          aria-label="Start voice command"
+          title="Voice Command"
+        >
+          🎤
+        </button>
+
+        <button
+          class="icon-button"
+          id="themeToggle"
+          type="button"
+          aria-label="Change theme"
+          title="Change Theme"
+        >
+          🌙
+        </button>
+
+        <div class="date-box">
+          <span id="currentDay">Today</span>
+          <strong id="currentDate">Loading...</strong>
+        </div>
+
+      </div>
+
+    </header>
+
+    <!-- Search results -->
+    <div
+      class="search-results hidden"
+      id="searchResults"
+    ></div>
+
+    <!-- =========================
+         PAGE CONTENT
+    ========================== -->
+    <main class="main-content" id="mainContent">
+
+      <!-- HOME -->
+      <section
+        class="app-section active"
+        id="home"
+        data-title="Good evening, Deeqo"
+        data-eyebrow="Command Center"
+      >
+        <!-- Part 2 will go here -->
+        <div class="temporary-placeholder">
+          <span>🚀</span>
+          <h3>Mission Control is powering up</h3>
+          <p>Your complete dashboard is coming in Part 2.</p>
+        </div>
+      </section>
+
+      <!-- BRAIN DUMP -->
+      <section
+        class="app-section"
+        id="brain-dump"
+        data-title="Brain Dump"
+        data-eyebrow="Clear Your Mind"
+      >
+        <!-- Brain Dump content will go here -->
+      </section>
+
+      <!-- VOICE COMMAND -->
+      <section
+        class="app-section"
+        id="voice-command"
+        data-title="Voice Command"
+        data-eyebrow="Speak To Mission Control"
+      >
+        <!-- Voice Command content will go here -->
+      </section>
+
+      <!-- SHADOW OPERATOR -->
+      <section
+        class="app-section"
+        id="shadow"
+        data-title="Shadow Operator"
+        data-eyebrow="Creator Monetization"
+      >
+        <!-- Shadow Operator content will go here -->
+      </section>
+
+      <!-- LEAD LIBRARY -->
+      <section
+        class="app-section"
+        id="lead-library"
+        data-title="Lead Library"
+        data-eyebrow="Creator Research"
+      >
+        <!-- Lead Library content will go here -->
+      </section>
+
+      <!-- DEENAS -->
+      <section
+        class="app-section"
+        id="deenas"
+        data-title="Deenas"
+        data-eyebrow="App Workspace"
+      >
+        <!-- Deenas content will go here -->
+      </section>
+
+      <!-- IDEA VOTE -->
+      <section
+        class="app-section"
+        id="idea-vote"
+        data-title="Idea Vote"
+        data-eyebrow="Choose What Matters"
+      >
+        <!-- Idea Vote content will go here -->
+      </section>
+
+      <!-- FOUNDER JOURNAL -->
+      <section
+        class="app-section"
+        id="journal"
+        data-title="Founder Journal"
+        data-eyebrow="Document The Journey"
+      >
+        <!-- Founder Journal content will go here -->
+      </section>
+
+      <!-- FAITH -->
+      <section
+        class="app-section"
+        id="faith"
+        data-title="Faith"
+        data-eyebrow="Faith Before Everything"
+      >
+        <!-- Faith content will go here -->
+      </section>
+
+      <!-- GYM -->
+      <section
+        class="app-section"
+        id="gym"
+        data-title="Gym"
+        data-eyebrow="Health And Strength"
+      >
+        <!-- Gym content will go here -->
+      </section>
+
+      <!-- DRAMA CENTER -->
+      <section
+        class="app-section"
+        id="drama-center"
+        data-title="Drama Center"
+        data-eyebrow="Pause Before Reacting"
+      >
+        <!-- Drama Center content will go here -->
+      </section>
+
+      <!-- CONNECTED BRAIN -->
+      <section
+        class="app-section"
+        id="connected-brain"
+        data-title="Connected Brain"
+        data-eyebrow="AI Intelligence"
+      >
+        <!-- Connected Brain content will go here -->
+      </section>
+
+      <!-- MISSION REPLAY -->
+      <section
+        class="app-section"
+        id="mission-replay"
+        data-title="Mission Replay"
+        data-eyebrow="Review Your Progress"
+      >
+        <!-- Mission Replay content will go here -->
+      </section>
+
+      <!-- SETTINGS -->
+      <section
+        class="app-section"
+        id="settings"
+        data-title="Settings"
+        data-eyebrow="Control Your System"
+      >
+        <!-- Settings content will go here -->
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- Toast notification -->
+  <div
+    class="toast"
+    id="toast"
+    role="status"
+    aria-live="polite"
+  >
+    <span id="toastIcon">✓</span>
+    <p id="toastMessage">Saved successfully</p>
+  </div>
+
+  <!-- Reusable modal -->
+  <div
+    class="modal-overlay hidden"
+    id="modalOverlay"
+  >
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalTitle"
+    >
+
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow" id="modalEyebrow">
+            Mission Control
+          </p>
+
+          <h3 id="modalTitle">Edit</h3>
+        </div>
+
+        <button
+          class="icon-button"
+          id="closeModal"
+          type="button"
+          aria-label="Close modal"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="modal-body" id="modalBody"></div>
+
+      <div class="modal-footer">
+        <button
+          class="secondary-button"
+          id="cancelModal"
+          type="button"
+        >
+          Cancel
+        </button>
+
+        <button
+          class="primary-button"
+          id="saveModal"
+          type="button"
+        >
+          Save
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
