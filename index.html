@@ -311,11 +311,485 @@
         data-eyebrow="Command Center"
       >
         <!-- Part 2 will go here -->
-        <div class="temporary-placeholder">
-          <span>🚀</span>
-          <h3>Mission Control is powering up</h3>
-          <p>Your complete dashboard is coming in Part 2.</p>
-        </div>
+        <!-- Welcome banner -->
+<div class="welcome-banner">
+
+  <div class="welcome-copy">
+    <p class="eyebrow">Today’s Command</p>
+
+    <h3>
+      One mission. Three priorities. Keep moving.
+    </h3>
+
+    <p>
+      Mission Control keeps your work, ideas, leads, faith,
+      health, and progress in one place.
+    </p>
+  </div>
+
+  <div class="progress-ring" id="progressRing">
+    <div class="progress-ring-center">
+      <strong id="homeProgressText">0%</strong>
+      <span>Complete</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- Main dashboard -->
+<div class="dashboard-grid">
+
+  <!-- Today’s Mission -->
+  <article class="dashboard-card mission-card card-wide">
+
+    <div class="card-header">
+
+      <div>
+        <p class="eyebrow">Main Focus</p>
+        <h3>Today’s Mission</h3>
+      </div>
+
+      <button
+        class="small-button"
+        id="editMissionButton"
+        type="button"
+      >
+        Edit
+      </button>
+
+    </div>
+
+    <textarea
+      class="mission-textarea"
+      id="missionInput"
+      placeholder="What is the one mission that must be completed today?"
+    ></textarea>
+
+    <div class="card-footer">
+
+      <span class="save-status">
+        <span class="save-dot"></span>
+        Saves automatically
+      </span>
+
+      <button
+        class="secondary-button"
+        id="completeMissionButton"
+        type="button"
+      >
+        Mark Complete
+      </button>
+
+    </div>
+
+  </article>
+
+  <!-- Right Now -->
+  <article class="dashboard-card right-now-card">
+
+    <div class="card-header">
+
+      <div>
+        <p class="eyebrow">Current Action</p>
+        <h3>Right Now</h3>
+      </div>
+
+      <span class="live-badge">Live</span>
+
+    </div>
+
+    <input
+      class="main-input"
+      id="rightNowInput"
+      type="text"
+      placeholder="What are you working on?"
+    >
+
+    <div class="focus-timer">
+      <strong id="timerDisplay">25:00</strong>
+      <span>Focus session</span>
+    </div>
+
+    <div class="button-group">
+
+      <button
+        class="primary-button"
+        id="startTimerButton"
+        type="button"
+      >
+        Start
+      </button>
+
+      <button
+        class="secondary-button"
+        id="resetTimerButton"
+        type="button"
+      >
+        Reset
+      </button>
+
+    </div>
+
+  </article>
+
+  <!-- Top 3 -->
+  <article class="dashboard-card card-wide">
+
+    <div class="card-header">
+
+      <div>
+        <p class="eyebrow">Important Moves</p>
+        <h3>Today’s Top 3</h3>
+      </div>
+
+      <span
+        class="number-badge"
+        id="topThreeCounter"
+      >
+        0 / 3
+      </span>
+
+    </div>
+
+    <div class="priority-list">
+
+      <label class="priority-item">
+
+        <input
+          class="priority-checkbox"
+          type="checkbox"
+          data-priority-check="0"
+        >
+
+        <span class="priority-number">1</span>
+
+        <input
+          class="priority-input"
+          type="text"
+          data-priority-input="0"
+          placeholder="First important priority"
+        >
+
+      </label>
+
+      <label class="priority-item">
+
+        <input
+          class="priority-checkbox"
+          type="checkbox"
+          data-priority-check="1"
+        >
+
+        <span class="priority-number">2</span>
+
+        <input
+          class="priority-input"
+          type="text"
+          data-priority-input="1"
+          placeholder="Second important priority"
+        >
+
+      </label>
+
+      <label class="priority-item">
+
+        <input
+          class="priority-checkbox"
+          type="checkbox"
+          data-priority-check="2"
+        >
+
+        <span class="priority-number">3</span>
+
+        <input
+          class="priority-input"
+          type="text"
+          data-priority-input="2"
+          placeholder="Third important priority"
+        >
+
+      </label>
+
+    </div>
+
+  </article>
+
+  <!-- Quick Brain Dump -->
+  <article class="dashboard-card">
+
+    <div class="card-header">
+
+      <div>
+        <p class="eyebrow">Capture Quickly</p>
+        <h3>Quick Brain Dump</h3>
+      </div>
+
+      <span class="card-icon">🧠</span>
+
+    </div>
+
+    <textarea
+      class="compact-textarea"
+      id="quickBrainInput"
+      placeholder="Write the thought before it disappears..."
+    ></textarea>
+
+    <button
+      class="primary-button full-button"
+      id="saveQuickBrainButton"
+      type="button"
+    >
+      Save Thought
+    </button>
+
+  </article>
+
+  <!-- Shadow Pulse -->
+  <article class="dashboard-card">
+
+    <div class="card-header">
+
+      <div>
+        <p class="eyebrow">Business Pulse</p>
+        <h3>Shadow Operator</h3>
+      </div>
+
+      <span class="card-icon">🎯</span>
+
+    </div>
+
+    <div class="mini-stat-list">
+
+      <div class="mini-stat">
+        <span>Total Leads</span>
+        <strong id="homeTotalLeads">0</strong>
+      </div>
+
+      <div class="mini-stat">
+        <span>Contacted</span>
+        <strong id="homeContactedLeads">0</strong>
+      </div>
+
+      <div class="mini-stat">
+        <span>Replies</span>
+        <strong id="homeReplies">0</strong>
+      </div>
+
+      <div class="mini-stat">
+        <span>Clients</span>
+        <strong id="homeClients">0</strong>
+      </div>
+
+    </div>
+
+    <button
+      class="secondary-button full-button section-jump"
+      type="button"
+      data-jump="shadow"
+    >
+      Open Shadow Operator
+    </button>
+
+  </article>
+
+  <!-- Best Opportunities -->
+  <article class="dashboard-card card-wide">
+
+    <div class="card-header">
+
+      <div>
+        <p class="eyebrow">Highest Potential</p>
+        <h3>Best Shadow Opportunities</h3>
+      </div>
+
+      <button
+        class="small-button section-jump"
+        type="button"
+        data-jump="lead-library"
+      >
+        View Leads
+      </button>
+
+    </div>
+
+    <div
+      class="opportunity-list"
+      id="bestOpportunityList"
+    >
+
+      <div class="empty-state compact-empty">
+        <span>👥</span>
+        <p>Your highest-scoring creator leads will appear here.</p>
+      </div>
+
+    </div>
+
+  </article>
+
+  <!-- Connected Brain -->
+  <article class="dashboard-card">
+
+    <div class="card-header">
+
+      <div>
+        <p class="eyebrow">Smart Insight</p>
+        <h3>Connected Brain</h3>
+      </div>
+
+      <span class="card-icon">🔗</span>
+
+    </div>
+
+    <div
+      class="insight-box"
+      id="homeConnectedInsight"
+    >
+      Add information throughout Mission Control and your
+      connected insight will appear here.
+    </div>
+
+    <button
+      class="secondary-button full-button section-jump"
+      type="button"
+      data-jump="connected-brain"
+    >
+      Open Connected Brain
+    </button>
+
+  </article>
+
+  <!-- Winning List -->
+  <article class="dashboard-card">
+
+    <div class="card-header">
+
+      <div>
+        <p class="eyebrow">Proof of Progress</p>
+        <h3>Winning List</h3>
+      </div>
+
+      <span class="card-icon">🏆</span>
+
+    </div>
+
+    <ul
+      class="winning-list"
+      id="winningList"
+    >
+      <li>Your completed wins will appear here.</li>
+    </ul>
+
+    <button
+      class="secondary-button full-button"
+      id="addWinButton"
+      type="button"
+    >
+      + Add a Win
+    </button>
+
+  </article>
+
+  <!-- Daily Energy -->
+  <article class="dashboard-card">
+
+    <div class="card-header">
+
+      <div>
+        <p class="eyebrow">Personal Check-In</p>
+        <h3>Energy Level</h3>
+      </div>
+
+      <span class="card-icon">⚡</span>
+
+    </div>
+
+    <input
+      class="energy-slider"
+      id="homeEnergySlider"
+      type="range"
+      min="0"
+      max="100"
+      value="50"
+    >
+
+    <div class="energy-output">
+
+      <strong id="homeEnergyValue">50%</strong>
+
+      <span id="homeEnergyMessage">
+        Steady energy
+      </span>
+
+    </div>
+
+  </article>
+
+  <!-- Today’s Schedule -->
+  <article class="dashboard-card card-wide">
+
+    <div class="card-header">
+
+      <div>
+        <p class="eyebrow">Daily Roadmap</p>
+        <h3>Today’s Plan</h3>
+      </div>
+
+      <span class="card-icon">🗓️</span>
+
+    </div>
+
+    <div class="schedule-list">
+
+      <div class="schedule-row">
+        <input
+          type="time"
+          class="schedule-time"
+          data-schedule-time="0"
+        >
+
+        <input
+          type="text"
+          class="schedule-task"
+          data-schedule-task="0"
+          placeholder="First planned work block"
+        >
+      </div>
+
+      <div class="schedule-row">
+        <input
+          type="time"
+          class="schedule-time"
+          data-schedule-time="1"
+        >
+
+        <input
+          type="text"
+          class="schedule-task"
+          data-schedule-task="1"
+          placeholder="Second planned work block"
+        >
+      </div>
+
+      <div class="schedule-row">
+        <input
+          type="time"
+          class="schedule-time"
+          data-schedule-time="2"
+        >
+
+        <input
+          type="text"
+          class="schedule-task"
+          data-schedule-task="2"
+          placeholder="Third planned work block"
+        >
+      </div>
+
+    </div>
+
+  </article>
+
+</div>
       </section>
 
       <!-- BRAIN DUMP -->
