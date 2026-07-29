@@ -799,7 +799,97 @@
         data-title="Brain Dump"
         data-eyebrow="Clear Your Mind"
       >
-        <!-- Brain Dump content will go here -->
+    <div class="dashboard-grid">
+
+  <!-- Brain Dump -->
+  <article class="dashboard-card card-wide">
+
+    <div class="card-header">
+      <div>
+        <p class="eyebrow">Empty Your Mind</p>
+        <h3>Brain Dump</h3>
+      </div>
+
+      <button
+        class="secondary-button"
+        id="clearBrainDumpButton"
+        type="button"
+      >
+        Clear
+      </button>
+    </div>
+
+    <textarea
+      id="brainDumpInput"
+      class="large-textarea"
+      placeholder="Write absolutely everything on your mind...
+
+Ideas...
+Tasks...
+Problems...
+Random thoughts...
+Questions...
+Things to remember..."
+    ></textarea>
+
+    <div class="card-footer">
+
+      <span class="save-status">
+        <span class="save-dot"></span>
+        Auto Saved
+      </span>
+
+      <button
+        class="primary-button"
+        id="saveBrainDumpButton"
+        type="button"
+      >
+        Save
+      </button>
+
+    </div>
+
+  </article>
+
+  <!-- AI Summary -->
+  <article class="dashboard-card">
+
+    <div class="card-header">
+      <div>
+        <p class="eyebrow">Connected Brain</p>
+        <h3>Summary</h3>
+      </div>
+    </div>
+
+    <div
+      class="insight-box"
+      id="brainDumpSummary"
+    >
+      Your Brain Dump summary will appear here.
+    </div>
+
+  </article>
+
+  <!-- Action Items -->
+  <article class="dashboard-card">
+
+    <div class="card-header">
+      <div>
+        <p class="eyebrow">Extracted Tasks</p>
+        <h3>Action Items</h3>
+      </div>
+    </div>
+
+    <ul
+      class="winning-list"
+      id="brainActionList"
+    >
+      <li>No action items yet.</li>
+    </ul>
+
+  </article>
+
+</div>
       </section>
 
       <!-- VOICE COMMAND -->
