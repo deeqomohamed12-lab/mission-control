@@ -876,3 +876,252 @@ document.addEventListener(
     initializeQuickBrainSave();
   }
 );
+/* =========================================
+   SCRIPT.JS — PART 4
+   Shadow Operator Creator CRM
+========================================= */
+
+function initializeCreatorCRM() {
+  const saveButton = getElement("saveCreatorButton");
+  const addButton = getElement("addCreatorButton");
+
+  if (saveButton) {
+    saveButton.addEventListener("click", saveCreatorFromForm);
+  }
+
+  if (addButton) {
+    addButton.addEventListener("click", () => {
+      openSection("shadow");
+
+      const creatorName = getElement("creatorName");
+
+      if (creatorName) {
+        creatorName.focus();
+      }
+    });
+  }
+
+  renderCreators();
+}
+
+function saveCreatorFromForm() {
+  const nameInput = getElement("creatorName");
+  const platformInput = getElement("creatorPlatform");
+  const followersInput = getElement("creatorFollowers");
+
+  if (!nameInput || !platformInput || !followersInput) {
+    return;
+  }
+
+  const name = nameInput.value.trim();
+  const platform = platformInput.value.trim();
+  const followers = Number(followersInput.value) || 0;
+
+  if (!name) {
+    showToast("Add a creator name first", "✍️");
+    nameInput.focus();
+    return;
+  }
+
+  const creators = loadData("creators", []);
+
+  creators.unshift({
+    id: Date.now(),
+    name,
+    platform: platform || "Not added",
+    followers,
+    status: "researching",
+    createdAt: new Date().toISOString()
+  });
+
+  saveData("creators", creators);
+
+  nameInput.value = "";
+  platformInput.value = "";
+  followersInput.value = "";
+
+  renderCreators();
+  showToast("Creator saved", "🎯");
+}
+
+function renderCreators() {
+  const creatorList = getElement("creatorList");
+  const creators = loadData("creators", []);
+
+  updateCreatorStats(creators);
+
+  if (!creatorList) {
+    return;
+  }
+
+  if (creators.length === 0) {
+    creatorList.innerHTML = `
+      <div class="empty-state compact-empty">
+        <span>👥</span>
+        <p>No creators added yet.</p>
+      </div>
+    `;
+    return;
+  }
+
+  creatorList.innerHTML = creators
+    .map((creator) => {
+      const followerText = Number(
+        creator.followers || 0
+      ).toLocaleString("en-US");
+
+      return `
+        <div class="opportunity-item">
+          <div>
+            <h4>${escapeHtml(creator.name)}</h4>
+            <p>
+              ${escapeHtml(creator.platform)}
+              · ${followerText} followers
+            </p>
+          </div>
+
+          <select
+            class="main-select creator-status-select"
+            data-creator-status="${creator.id}"
+          >
+            <option value="researching">
+              Researching
+            </option>
+
+            <option value="contacted">
+              Contacted
+            </option>
+
+            <option value="replied">
+              Replied
+            </option>
+
+            <option value="client">
+              Client
+            </option>
+          </select>
+
+          <button
+            class="small-button"
+            type="button"
+            data-delete-creator="${creator.id}"
+          >
+            Delete
+          </button>
+        </div>
+      `;
+    })
+    .join("");
+
+  getAll("[data-creator-status]").forEach(
+    (select) => {
+      const creatorId = Number(
+        select.dataset.creatorStatus
+      );
+
+      const creator = creators.find(
+        (item) => item.id === creatorId
+      );
+
+      if (creator) {
+        select.value = creator.status;
+      }
+
+      select.addEventListener("change", () => {
+        updateCreatorStatus(
+          creatorId,
+          select.value
+        );
+      });
+    }
+  );
+
+  getAll("[data-delete-creator]").forEach(
+    (button) => {
+      button.addEventListener("click", () => {
+        deleteCreator(
+          Number(button.dataset.deleteCreator)
+        );
+      });
+    }
+  );
+}
+
+function updateCreatorStatus(creatorId, status) {
+  const creators = loadData("creators", []);
+
+  const creator = creators.find(
+    (item) => item.id === creatorId
+  );
+
+  if (!creator) {
+    return;
+  }
+
+  creator.status = status;
+  saveData("creators", creators);
+
+  renderCreators();
+  showToast("Creator status updated", "✓");
+}
+
+function deleteCreator(creatorId) {
+  const confirmed = window.confirm(
+    "Delete this creator?"
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  const creators = loadData("creators", [])
+    .filter((creator) => creator.id !== creatorId);
+
+  saveData("creators", creators);
+
+  renderCreators();
+  showToast("Creator deleted", "🗑️");
+}
+
+function updateCreatorStats(creators) {
+  const stats = {
+    total: creators.length,
+    contacted: creators.filter(
+      (creator) => creator.status === "contacted"
+    ).length,
+    replies: creators.filter(
+      (creator) => creator.status === "replied"
+    ).length,
+    clients: creators.filter(
+      (creator) => creator.status === "client"
+    ).length
+  };
+
+  const bindings = {
+    creatorTotal: stats.total,
+    creatorContacted: stats.contacted,
+    creatorReplies: stats.replies,
+    creatorClients: stats.clients,
+    homeTotalLeads: stats.total,
+    homeContactedLeads: stats.contacted,
+    homeReplies: stats.replies,
+    homeClients: stats.clients
+  };
+
+  Object.entries(bindings).forEach(
+    ([elementId, value]) => {
+      const element = getElement(elementId);
+
+      if (element) {
+        element.textContent = value;
+      }
+    }
+  );
+}
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+    initializeCreatorCRM();
+  }
+);
