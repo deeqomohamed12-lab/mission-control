@@ -2476,3 +2476,60 @@ document.addEventListener(
     initializeFaithTracker();
   }
 );
+/* =========================================
+   MISSION CONTROL V1.0
+   FINAL CLEANUP
+========================================= */
+
+function finalizeMissionControlV1() {
+  const unfinishedSections = [
+    "voice-command",
+    "deenas",
+    "idea-vote",
+    "gym",
+    "drama-center",
+    "connected-brain",
+    "mission-replay",
+    "settings"
+  ];
+
+  unfinishedSections.forEach((sectionId) => {
+    const navButton = document.querySelector(
+      `.nav-item[data-section="${sectionId}"]`
+    );
+
+    if (navButton) {
+      navButton.style.display = "none";
+    }
+  });
+
+  const connectedBrainButtons = getAll(
+    '[data-jump="connected-brain"]'
+  );
+
+  connectedBrainButtons.forEach((button) => {
+    button.style.display = "none";
+  });
+
+  const voiceButton = getElement("voiceQuickButton");
+
+  if (voiceButton) {
+    voiceButton.style.display = "none";
+  }
+
+  const savedSection = loadData(
+    "activeSection",
+    "home"
+  );
+
+  if (unfinishedSections.includes(savedSection)) {
+    openSection("home");
+  }
+}
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+    finalizeMissionControlV1();
+  }
+);
