@@ -1752,3 +1752,159 @@ document.addEventListener(
     initializeLeadLibrary();
   }
 );
+/* =========================================
+   SCRIPT.JS — PART 6B
+   Bulk Creator Import
+========================================= */
+
+function cleanCreatorUsername(value) {
+  return String(value)
+    .trim()
+    .replace(/^https?:\/\/(www\.)?instagram\.com\//i, "")
+    .replace(/[/?#].*$/, "")
+    .replace(/^@/, "")
+    .trim();
+}
+
+function getBulkUsernames() {
+  const bulkInput = getElement("bulkLeadInput");
+
+  if (!bulkInput) {
+    return [];
+  }
+
+  const rawLines = bulkInput.value
+    .split(/\n|,/)
+    .map(cleanCreatorUsername)
+    .filter(Boolean);
+
+  return [...new Set(rawLines)];
+}
+
+function updateBulkLeadCount() {
+  const counter = getElement("bulkLeadCount");
+  const usernames = getBulkUsernames();
+
+  if (!counter) {
+    return;
+  }
+
+  counter.textContent =
+    `${usernames.length} ` +
+    `${usernames.length === 1 ? "username" : "usernames"}`;
+}
+
+function importBulkLeads() {
+  const bulkInput = getElement("bulkLeadInput");
+
+  if (!bulkInput) {
+    return;
+  }
+
+  const usernames = getBulkUsernames();
+
+  if (usernames.length === 0) {
+    showToast("Paste creator usernames first", "✍️");
+    return;
+  }
+
+  const leads = loadData("leads", []);
+
+  const existingUsernames = new Set(
+    leads
+      .map((lead) =>
+        cleanCreatorUsername(lead.handle || "")
+          .toLowerCase()
+      )
+      .filter(Boolean)
+  );
+
+  let importedCount = 0;
+  let skippedCount = 0;
+
+  usernames.forEach((username, index) => {
+    const normalizedUsername =
+      username.toLowerCase();
+
+    if (existingUsernames.has(normalizedUsername)) {
+      skippedCount += 1;
+      return;
+    }
+
+    leads.unshift({
+      id: Date.now() + index,
+      name: username,
+      handle: `@${username}`,
+      niche: "",
+      followers: 0,
+      platform: "Instagram",
+      status: "researching",
+      createdAt: new Date().toISOString()
+    });
+
+    existingUsernames.add(normalizedUsername);
+    importedCount += 1;
+  });
+
+  saveData("leads", leads);
+
+  bulkInput.value = "";
+  updateBulkLeadCount();
+  renderLeadLibrary();
+
+  if (importedCount === 0) {
+    showToast(
+      "All usernames were already imported",
+      "✓"
+    );
+    return;
+  }
+
+  const skippedMessage = skippedCount
+    ? ` · ${skippedCount} duplicates skipped`
+    : "";
+
+  showToast(
+    `${importedCount} creators imported${skippedMessage}`,
+    "📥"
+  );
+}
+
+function initializeBulkLeadImport() {
+  const bulkInput = getElement("bulkLeadInput");
+  const importButton =
+    getElement("importBulkLeadButton");
+  const clearButton =
+    getElement("clearBulkLeadButton");
+
+  if (bulkInput) {
+    bulkInput.addEventListener(
+      "input",
+      updateBulkLeadCount
+    );
+  }
+
+  if (importButton) {
+    importButton.addEventListener(
+      "click",
+      importBulkLeads
+    );
+  }
+
+  if (clearButton && bulkInput) {
+    clearButton.addEventListener("click", () => {
+      bulkInput.value = "";
+      updateBulkLeadCount();
+      showToast("Import box cleared", "🗑️");
+    });
+  }
+
+  updateBulkLeadCount();
+}
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+    initializeBulkLeadImport();
+  }
+);
