@@ -657,3 +657,222 @@ document.addEventListener(
     updateHomeProgress();
   }
 );
+/* =========================================
+   SCRIPT.JS — PART 3
+   Timer and Brain Dump
+========================================= */
+
+let timerSeconds = 25 * 60;
+let timerInterval = null;
+
+function updateTimerDisplay() {
+  const display = getElement("timerDisplay");
+
+  if (!display) {
+    return;
+  }
+
+  const minutes = Math.floor(timerSeconds / 60);
+  const seconds = timerSeconds % 60;
+
+  display.textContent =
+    `${String(minutes).padStart(2, "0")}:` +
+    `${String(seconds).padStart(2, "0")}`;
+}
+
+function initializeTimer() {
+  const startButton = getElement("startTimerButton");
+  const resetButton = getElement("resetTimerButton");
+
+  if (!startButton || !resetButton) {
+    return;
+  }
+
+  updateTimerDisplay();
+
+  startButton.addEventListener("click", () => {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      startButton.textContent = "Start";
+      return;
+    }
+
+    startButton.textContent = "Pause";
+
+    timerInterval = setInterval(() => {
+      timerSeconds -= 1;
+      updateTimerDisplay();
+
+      if (timerSeconds <= 0) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        timerSeconds = 25 * 60;
+        startButton.textContent = "Start";
+        updateTimerDisplay();
+        showToast("Focus session complete", "⏱️");
+      }
+    }, 1000);
+  });
+
+  resetButton.addEventListener("click", () => {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    timerSeconds = 25 * 60;
+    startButton.textContent = "Start";
+    updateTimerDisplay();
+    showToast("Timer reset", "↺");
+  });
+}
+
+function initializeBrainDump() {
+  const brainDumpInput = getElement("brainDumpInput");
+  const saveButton = getElement("saveBrainDumpButton");
+  const clearButton = getElement("clearBrainDumpButton");
+
+  if (!brainDumpInput) {
+    return;
+  }
+
+  brainDumpInput.value = loadData("brainDump", "");
+
+  brainDumpInput.addEventListener("input", () => {
+    saveData("brainDump", brainDumpInput.value);
+    updateBrainSummary();
+  });
+
+  if (saveButton) {
+    saveButton.addEventListener("click", () => {
+      saveData("brainDump", brainDumpInput.value);
+      updateBrainSummary();
+      showToast("Brain Dump saved", "🧠");
+    });
+  }
+
+  if (clearButton) {
+    clearButton.addEventListener("click", () => {
+      const confirmed = window.confirm(
+        "Clear your entire Brain Dump?"
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+      brainDumpInput.value = "";
+      saveData("brainDump", "");
+      updateBrainSummary();
+      showToast("Brain Dump cleared", "🗑️");
+    });
+  }
+
+  updateBrainSummary();
+}
+
+function updateBrainSummary() {
+  const brainDumpInput = getElement("brainDumpInput");
+  const summary = getElement("brainDumpSummary");
+  const actionList = getElement("brainActionList");
+
+  if (!brainDumpInput || !summary || !actionList) {
+    return;
+  }
+
+  const text = brainDumpInput.value.trim();
+
+  if (!text) {
+    summary.textContent =
+      "Your Brain Dump summary will appear here.";
+
+    actionList.innerHTML =
+      "<li>No action items yet.</li>";
+
+    return;
+  }
+
+  const words = text
+    .split(/\s+/)
+    .filter(Boolean);
+
+  const lines = text
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  summary.textContent =
+    `You captured ${words.length} words across ` +
+    `${lines.length} thought${lines.length === 1 ? "" : "s"}.`;
+
+  const possibleTasks = lines.filter((line) => {
+    const lower = line.toLowerCase();
+
+    return (
+      lower.startsWith("call ") ||
+      lower.startsWith("email ") ||
+      lower.startsWith("send ") ||
+      lower.startsWith("finish ") ||
+      lower.startsWith("create ") ||
+      lower.startsWith("do ") ||
+      lower.startsWith("buy ") ||
+      lower.startsWith("contact ")
+    );
+  });
+
+  if (possibleTasks.length === 0) {
+    actionList.innerHTML =
+      "<li>No obvious action items found yet.</li>";
+    return;
+  }
+
+  actionList.innerHTML = possibleTasks
+    .slice(0, 8)
+    .map((task) => `<li>${escapeHtml(task)}</li>`)
+    .join("");
+}
+
+function initializeQuickBrainSave() {
+  const saveButton = getElement("saveQuickBrainButton");
+  const quickInput = getElement("quickBrainInput");
+
+  if (!saveButton || !quickInput) {
+    return;
+  }
+
+  saveButton.addEventListener("click", () => {
+    const thought = quickInput.value.trim();
+
+    if (!thought) {
+      showToast("Write a thought first", "✍️");
+      return;
+    }
+
+    const existing = loadData("brainDump", "");
+    const divider = existing.trim() ? "\n\n" : "";
+
+    const updated =
+      `${existing}${divider}${thought}`;
+
+    saveData("brainDump", updated);
+
+    const fullBrainDump = getElement("brainDumpInput");
+
+    if (fullBrainDump) {
+      fullBrainDump.value = updated;
+    }
+
+    quickInput.value = "";
+    saveData("quickBrainText", "");
+    updateBrainSummary();
+
+    showToast("Thought added to Brain Dump", "🧠");
+  });
+}
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+    initializeTimer();
+    initializeBrainDump();
+    initializeQuickBrainSave();
+  }
+);
