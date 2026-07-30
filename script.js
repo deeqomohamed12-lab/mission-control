@@ -1125,3 +1125,92 @@ document.addEventListener(
     initializeCreatorCRM();
   }
 );
+/* =========================================
+   CREATOR DISPLAY REPAIR
+========================================= */
+
+function renderCreators() {
+  const creatorList = getElement("creatorList");
+  const creators = loadData("creators", []);
+
+  updateCreatorStats(creators);
+
+  if (!creatorList) {
+    return;
+  }
+
+  if (!Array.isArray(creators) || creators.length === 0) {
+    creatorList.innerHTML = `
+      <div class="empty-state compact-empty">
+        <span>👥</span>
+        <p>No creators added yet.</p>
+      </div>
+    `;
+    return;
+  }
+
+  creatorList.innerHTML = "";
+
+  creators.forEach((creator) => {
+    const card = document.createElement("div");
+    card.className = "opportunity-item";
+
+    const information = document.createElement("div");
+
+    const name = document.createElement("h4");
+    name.textContent = creator.name || "Unnamed Creator";
+
+    const details = document.createElement("p");
+    const followers = Number(
+      creator.followers || 0
+    ).toLocaleString("en-US");
+
+    details.textContent =
+      `${creator.platform || "Platform not added"} · ` +
+      `${followers} followers`;
+
+    information.appendChild(name);
+    information.appendChild(details);
+
+    const status = document.createElement("select");
+    status.className = "main-select creator-status-select";
+
+    const statuses = [
+      ["researching", "Researching"],
+      ["contacted", "Contacted"],
+      ["replied", "Replied"],
+      ["client", "Client"]
+    ];
+
+    statuses.forEach(([value, label]) => {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = label;
+      status.appendChild(option);
+    });
+
+    status.value = creator.status || "researching";
+
+    status.addEventListener("change", () => {
+      updateCreatorStatus(
+        Number(creator.id),
+        status.value
+      );
+    });
+
+    const deleteButton = document.createElement("button");
+    deleteButton.className = "small-button";
+    deleteButton.type = "button";
+    deleteButton.textContent = "Delete";
+
+    deleteButton.addEventListener("click", () => {
+      deleteCreator(Number(creator.id));
+    });
+
+    card.appendChild(information);
+    card.appendChild(status);
+    card.appendChild(deleteButton);
+
+    creatorList.appendChild(card);
+  });
+}
