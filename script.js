@@ -1384,3 +1384,371 @@ document.addEventListener(
     refreshCRMDisplay();
   }
 );
+/* =========================================
+   SCRIPT.JS — PART 6A
+   Lead Library
+========================================= */
+
+function initializeLeadLibrary() {
+  const saveButton = getElement("saveLeadButton");
+  const addButton = getElement("addLeadButton");
+  const searchInput = getElement("leadSearchInput");
+  const statusFilter = getElement("leadStatusFilter");
+
+  if (saveButton) {
+    saveButton.addEventListener(
+      "click",
+      saveLeadFromForm
+    );
+  }
+
+  if (addButton) {
+    addButton.addEventListener("click", () => {
+      const nameInput = getElement("leadName");
+
+      if (nameInput) {
+        nameInput.focus();
+      }
+    });
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener(
+      "input",
+      renderLeadLibrary
+    );
+  }
+
+  if (statusFilter) {
+    statusFilter.addEventListener(
+      "change",
+      renderLeadLibrary
+    );
+  }
+
+  renderLeadLibrary();
+}
+
+function saveLeadFromForm() {
+  const nameInput = getElement("leadName");
+  const handleInput = getElement("leadHandle");
+  const nicheInput = getElement("leadNiche");
+  const followersInput = getElement("leadFollowers");
+  const platformInput = getElement("leadPlatform");
+
+  if (
+    !nameInput ||
+    !handleInput ||
+    !nicheInput ||
+    !followersInput ||
+    !platformInput
+  ) {
+    return;
+  }
+
+  const name = nameInput.value.trim();
+  const handle = handleInput.value.trim();
+  const niche = nicheInput.value.trim();
+  const followers =
+    Number(followersInput.value) || 0;
+  const platform = platformInput.value;
+
+  if (!name) {
+    showToast("Add the creator name first", "✍️");
+    nameInput.focus();
+    return;
+  }
+
+  const leads = loadData("leads", []);
+
+  leads.unshift({
+    id: Date.now(),
+    name,
+    handle,
+    niche,
+    followers,
+    platform: platform || "Other",
+    status: "researching",
+    createdAt: new Date().toISOString()
+  });
+
+  saveData("leads", leads);
+
+  nameInput.value = "";
+  handleInput.value = "";
+  nicheInput.value = "";
+  followersInput.value = "";
+  platformInput.value = "";
+
+  renderLeadLibrary();
+  showToast("Lead saved", "📚");
+}
+
+function renderLeadLibrary() {
+  const wrapper = getElement("leadTableWrapper");
+  const searchInput = getElement("leadSearchInput");
+  const statusFilter = getElement("leadStatusFilter");
+
+  if (!wrapper) {
+    return;
+  }
+
+  const leads = loadData("leads", []);
+
+  const searchText = searchInput
+    ? searchInput.value.trim().toLowerCase()
+    : "";
+
+  const selectedStatus = statusFilter
+    ? statusFilter.value
+    : "all";
+
+  const visibleLeads = leads.filter((lead) => {
+    const searchableText = [
+      lead.name,
+      lead.handle,
+      lead.niche,
+      lead.platform
+    ]
+      .join(" ")
+      .toLowerCase();
+
+    const matchesSearch =
+      !searchText ||
+      searchableText.includes(searchText);
+
+    const matchesStatus =
+      selectedStatus === "all" ||
+      lead.status === selectedStatus;
+
+    return matchesSearch && matchesStatus;
+  });
+
+  updateLeadStats(leads, visibleLeads.length);
+
+  if (visibleLeads.length === 0) {
+    wrapper.innerHTML = `
+      <div class="empty-state">
+        <span>📚</span>
+        <h4>No matching leads</h4>
+        <p>
+          Add a new creator lead or change your
+          search and filter.
+        </p>
+      </div>
+    `;
+
+    return;
+  }
+
+  wrapper.innerHTML = `
+    <table class="lead-table">
+      <thead>
+        <tr>
+          <th>Creator</th>
+          <th>Platform</th>
+          <th>Niche</th>
+          <th>Followers</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        ${visibleLeads
+          .map((lead) => {
+            const followers = Number(
+              lead.followers || 0
+            ).toLocaleString("en-US");
+
+            return `
+              <tr>
+                <td>
+                  <strong>
+                    ${escapeHtml(lead.name)}
+                  </strong>
+
+                  <br>
+
+                  <span>
+                    ${escapeHtml(
+                      lead.handle || "No username"
+                    )}
+                  </span>
+                </td>
+
+                <td>
+                  ${escapeHtml(lead.platform)}
+                </td>
+
+                <td>
+                  ${escapeHtml(
+                    lead.niche || "Not added"
+                  )}
+                </td>
+
+                <td>
+                  ${followers}
+                </td>
+
+                <td>
+                  <select
+                    class="main-select"
+                    data-lead-status="${lead.id}"
+                  >
+                    <option value="researching">
+                      Researching
+                    </option>
+
+                    <option value="ready">
+                      Ready to Contact
+                    </option>
+
+                    <option value="contacted">
+                      Contacted
+                    </option>
+
+                    <option value="replied">
+                      Replied
+                    </option>
+
+                    <option value="client">
+                      Client
+                    </option>
+                  </select>
+                </td>
+
+                <td>
+                  <button
+                    class="small-button"
+                    type="button"
+                    data-delete-lead="${lead.id}"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            `;
+          })
+          .join("")}
+      </tbody>
+    </table>
+  `;
+
+  connectLeadLibraryButtons(leads);
+}
+
+function connectLeadLibraryButtons(leads) {
+  getAll("[data-lead-status]").forEach(
+    (select) => {
+      const leadId = Number(
+        select.dataset.leadStatus
+      );
+
+      const lead = leads.find(
+        (item) => item.id === leadId
+      );
+
+      if (lead) {
+        select.value = lead.status;
+      }
+
+      select.addEventListener("change", () => {
+        updateLeadStatus(
+          leadId,
+          select.value
+        );
+      });
+    }
+  );
+
+  getAll("[data-delete-lead]").forEach(
+    (button) => {
+      button.addEventListener("click", () => {
+        deleteLead(
+          Number(button.dataset.deleteLead)
+        );
+      });
+    }
+  );
+}
+
+function updateLeadStatus(leadId, status) {
+  const leads = loadData("leads", []);
+
+  const lead = leads.find(
+    (item) => item.id === leadId
+  );
+
+  if (!lead) {
+    return;
+  }
+
+  lead.status = status;
+  saveData("leads", leads);
+
+  renderLeadLibrary();
+  showToast("Lead status updated", "✓");
+}
+
+function deleteLead(leadId) {
+  const confirmed = window.confirm(
+    "Delete this lead?"
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  const leads = loadData("leads", [])
+    .filter((lead) => lead.id !== leadId);
+
+  saveData("leads", leads);
+
+  renderLeadLibrary();
+  showToast("Lead deleted", "🗑️");
+}
+
+function updateLeadStats(leads, visibleCount) {
+  const values = {
+    libraryTotalLeads: leads.length,
+
+    libraryReadyLeads: leads.filter(
+      (lead) => lead.status === "ready"
+    ).length,
+
+    libraryContactedLeads: leads.filter(
+      (lead) => lead.status === "contacted"
+    ).length,
+
+    libraryClientLeads: leads.filter(
+      (lead) => lead.status === "client"
+    ).length
+  };
+
+  Object.entries(values).forEach(
+    ([elementId, value]) => {
+      const element = getElement(elementId);
+
+      if (element) {
+        element.textContent = value;
+      }
+    }
+  );
+
+  const visibleCounter =
+    getElement("visibleLeadCount");
+
+  if (visibleCounter) {
+    visibleCounter.textContent =
+      `${visibleCount} ` +
+      `${visibleCount === 1 ? "lead" : "leads"}`;
+  }
+}
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+    initializeLeadLibrary();
+  }
+);
