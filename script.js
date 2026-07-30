@@ -2533,3 +2533,226 @@ document.addEventListener(
     finalizeMissionControlV1();
   }
 );
+
+/* =========================================
+   MISSION CONTROL V1.0
+   FINAL PART 9
+   Connected Brain and Winning List
+========================================= */
+
+function updateConnectedBrainInsight() {
+  const homeInsight = getElement(
+    "homeConnectedInsight"
+  );
+
+  if (!homeInsight) {
+    return;
+  }
+
+  const mission = loadData(
+    "missionText",
+    ""
+  ).trim();
+
+  const missionComplete = loadData(
+    "missionComplete",
+    false
+  );
+
+  const creators = loadData(
+    "creators",
+    []
+  );
+
+  const leads = loadData(
+    "leads",
+    []
+  );
+
+  const journalEntries = loadData(
+    "journalEntries",
+    []
+  );
+
+  const energy = Number(
+    loadData("homeEnergy", 50)
+  );
+
+  const readyLeads = leads.filter(
+    (lead) => lead.status === "ready"
+  ).length;
+
+  const contactedLeads = leads.filter(
+    (lead) => lead.status === "contacted"
+  ).length;
+
+  const repliedLeads = leads.filter(
+    (lead) => lead.status === "replied"
+  ).length;
+
+  let insight = "";
+
+  if (!mission) {
+    insight =
+      "Start by writing today’s mission. Mission Control will use it to guide your next action.";
+  } else if (!missionComplete) {
+    insight =
+      `Your main focus is: “${mission}” ` +
+      `You currently have ${leads.length} leads, ` +
+      `${readyLeads} ready to contact, and ` +
+      `${contactedLeads} contacted.`;
+  } else {
+    insight =
+      "Your main mission is complete. Record the win and choose the next most important move.";
+  }
+
+  if (energy <= 30) {
+    insight +=
+      " Your energy is low, so choose one small task and avoid starting several things.";
+  } else if (energy >= 75) {
+    insight +=
+      " Your energy is high, making this a good time for outreach or focused research.";
+  }
+
+  if (repliedLeads > 0) {
+    insight +=
+      ` You have ${repliedLeads} creator ` +
+      `${repliedLeads === 1 ? "reply" : "replies"} waiting for attention.`;
+  }
+
+  if (journalEntries.length > 0) {
+    insight +=
+      " Your Founder Journal is active, so remember to review today’s lesson before ending the day.";
+  }
+
+  if (creators.length > 0) {
+    const highestCreator = creators
+      .map((creator) => ({
+        ...creator,
+        score: typeof calculateOpportunityScore ===
+          "function"
+          ? calculateOpportunityScore(creator)
+          : 0
+      }))
+      .sort((a, b) => b.score - a.score)[0];
+
+    if (highestCreator) {
+      insight +=
+        ` Your strongest current opportunity is ${highestCreator.name}.`;
+    }
+  }
+
+  homeInsight.textContent = insight;
+}
+
+function automaticallyRecordMissionWin() {
+  const missionComplete = loadData(
+    "missionComplete",
+    false
+  );
+
+  const mission = loadData(
+    "missionText",
+    ""
+  ).trim();
+
+  if (!missionComplete || !mission) {
+    return;
+  }
+
+  const wins = loadData("wins", []);
+
+  const alreadySaved = wins.some(
+    (win) =>
+      typeof win === "string" &&
+      win.toLowerCase() ===
+        mission.toLowerCase()
+  );
+
+  if (!alreadySaved) {
+    wins.unshift(mission);
+    saveData("wins", wins);
+    renderWinningList();
+  }
+}
+
+function enhanceWinningList() {
+  const list = getElement("winningList");
+
+  if (!list) {
+    return;
+  }
+
+  const wins = loadData("wins", []);
+
+  if (wins.length === 0) {
+    list.innerHTML =
+      "<li>Your completed wins will appear here.</li>";
+    return;
+  }
+
+  list.innerHTML = "";
+
+  wins.slice(0, 10).forEach((win, index) => {
+    const item = document.createElement("li");
+
+    const text = document.createElement("span");
+    text.textContent = win;
+
+    const removeButton =
+      document.createElement("button");
+
+    removeButton.type = "button";
+    removeButton.className = "small-button";
+    removeButton.textContent = "Remove";
+    removeButton.style.marginLeft = "12px";
+
+    removeButton.addEventListener(
+      "click",
+      () => {
+        const updatedWins = loadData(
+          "wins",
+          []
+        );
+
+        updatedWins.splice(index, 1);
+
+        saveData("wins", updatedWins);
+        enhanceWinningList();
+
+        showToast("Win removed", "🗑️");
+      }
+    );
+
+    item.appendChild(text);
+    item.appendChild(removeButton);
+    list.appendChild(item);
+  });
+}
+
+function finalizeConnectedBrainAndWins() {
+  automaticallyRecordMissionWin();
+  enhanceWinningList();
+  updateConnectedBrainInsight();
+}
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+    finalizeConnectedBrainAndWins();
+  }
+);
+
+document.addEventListener(
+  "input",
+  () => {
+    updateConnectedBrainInsight();
+  }
+);
+
+document.addEventListener(
+  "change",
+  () => {
+    updateConnectedBrainInsight();
+  }
+);
