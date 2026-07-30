@@ -2161,3 +2161,318 @@ document.addEventListener(
     renderLeadLibrary();
   }
 );
+/* =========================================
+   SCRIPT.JS — FINAL PART 8
+   Founder Journal and Faith
+========================================= */
+
+function initializeFounderJournal() {
+  const fields = [
+    ["journalWin", "journalWinDraft"],
+    ["journalLesson", "journalLessonDraft"],
+    ["journalChallenge", "journalChallengeDraft"],
+    ["journalTomorrow", "journalTomorrowDraft"],
+    ["journalMood", "journalMoodDraft"]
+  ];
+
+  fields.forEach(([elementId, storageKey]) => {
+    const element = getElement(elementId);
+
+    if (!element) {
+      return;
+    }
+
+    element.value = loadData(storageKey, "");
+
+    element.addEventListener("input", () => {
+      saveData(storageKey, element.value);
+    });
+
+    element.addEventListener("change", () => {
+      saveData(storageKey, element.value);
+    });
+  });
+
+  const energy = getElement("journalEnergy");
+  const energyValue = getElement("journalEnergyValue");
+
+  if (energy && energyValue) {
+    energy.value = loadData("journalEnergyDraft", 50);
+
+    const updateJournalEnergy = () => {
+      energyValue.textContent = `${energy.value}%`;
+      saveData(
+        "journalEnergyDraft",
+        Number(energy.value)
+      );
+    };
+
+    energy.addEventListener(
+      "input",
+      updateJournalEnergy
+    );
+
+    updateJournalEnergy();
+  }
+
+  const saveButton = getElement("saveJournalButton");
+
+  if (saveButton) {
+    saveButton.addEventListener(
+      "click",
+      saveJournalEntry
+    );
+  }
+
+  renderJournalHistory();
+}
+
+function saveJournalEntry() {
+  const entry = {
+    id: Date.now(),
+    date: new Date().toISOString(),
+    win: getElement("journalWin")?.value.trim() || "",
+    lesson:
+      getElement("journalLesson")?.value.trim() || "",
+    challenge:
+      getElement("journalChallenge")?.value.trim() || "",
+    tomorrow:
+      getElement("journalTomorrow")?.value.trim() || "",
+    mood:
+      getElement("journalMood")?.value || "",
+    energy:
+      Number(getElement("journalEnergy")?.value) || 50
+  };
+
+  const hasContent =
+    entry.win ||
+    entry.lesson ||
+    entry.challenge ||
+    entry.tomorrow;
+
+  if (!hasContent) {
+    showToast("Write something before saving", "✍️");
+    return;
+  }
+
+  const entries = loadData("journalEntries", []);
+  entries.unshift(entry);
+
+  saveData("journalEntries", entries);
+
+  [
+    "journalWin",
+    "journalLesson",
+    "journalChallenge",
+    "journalTomorrow"
+  ].forEach((elementId) => {
+    const element = getElement(elementId);
+
+    if (element) {
+      element.value = "";
+    }
+  });
+
+  saveData("journalWinDraft", "");
+  saveData("journalLessonDraft", "");
+  saveData("journalChallengeDraft", "");
+  saveData("journalTomorrowDraft", "");
+
+  renderJournalHistory();
+  showToast("Journal entry saved", "📖");
+}
+
+function renderJournalHistory() {
+  const history = getElement("journalHistory");
+  const counter = getElement("journalEntryCount");
+
+  if (!history) {
+    return;
+  }
+
+  const entries = loadData("journalEntries", []);
+
+  if (counter) {
+    counter.textContent =
+      `${entries.length} ` +
+      `${entries.length === 1 ? "entry" : "entries"}`;
+  }
+
+  if (entries.length === 0) {
+    history.innerHTML = `
+      <div class="empty-state compact-empty">
+        <span>📖</span>
+        <p>Your saved journal entries will appear here.</p>
+      </div>
+    `;
+    return;
+  }
+
+  history.innerHTML = entries
+    .slice(0, 20)
+    .map((entry) => {
+      const date = new Date(
+        entry.date
+      ).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      });
+
+      return `
+        <div class="opportunity-item">
+          <div>
+            <h4>${escapeHtml(date)}</h4>
+            <p>
+              ${escapeHtml(
+                entry.win ||
+                entry.lesson ||
+                entry.tomorrow ||
+                "Journal entry"
+              )}
+            </p>
+            <p>
+              Mood: ${escapeHtml(entry.mood || "Not added")}
+              · Energy: ${entry.energy}%
+            </p>
+          </div>
+
+          <button
+            class="small-button"
+            type="button"
+            data-delete-journal="${entry.id}"
+          >
+            Delete
+          </button>
+        </div>
+      `;
+    })
+    .join("");
+
+  getAll("[data-delete-journal]").forEach(
+    (button) => {
+      button.addEventListener("click", () => {
+        const entryId = Number(
+          button.dataset.deleteJournal
+        );
+
+        const updatedEntries = loadData(
+          "journalEntries",
+          []
+        ).filter(
+          (entry) => Number(entry.id) !== entryId
+        );
+
+        saveData("journalEntries", updatedEntries);
+        renderJournalHistory();
+        showToast("Journal entry deleted", "🗑️");
+      });
+    }
+  );
+}
+
+function initializeFaithTracker() {
+  const savedPrayers = loadData(
+    "faithPrayers",
+    {}
+  );
+
+  getAll("[data-faith-check]").forEach(
+    (checkbox) => {
+      const prayerName =
+        checkbox.dataset.faithCheck;
+
+      checkbox.checked =
+        Boolean(savedPrayers[prayerName]);
+
+      checkbox.addEventListener(
+        "change",
+        () => {
+          savedPrayers[prayerName] =
+            checkbox.checked;
+
+          saveData(
+            "faithPrayers",
+            savedPrayers
+          );
+
+          updateFaithPrayerCount();
+        }
+      );
+    }
+  );
+
+  [
+    ["quranReadingInput", "quranReading"],
+    ["quranReflectionInput", "quranReflection"],
+    ["duaInput", "dua"],
+    ["faithGratitudeInput", "faithGratitude"]
+  ].forEach(([elementId, storageKey]) => {
+    bindSavedInput(elementId, storageKey);
+  });
+
+  const increaseButton =
+    getElement("increaseDhikrButton");
+  const resetButton =
+    getElement("resetDhikrButton");
+
+  if (increaseButton) {
+    increaseButton.addEventListener(
+      "click",
+      () => {
+        const nextCount =
+          loadData("dhikrCount", 0) + 1;
+
+        saveData("dhikrCount", nextCount);
+        updateDhikrDisplay();
+      }
+    );
+  }
+
+  if (resetButton) {
+    resetButton.addEventListener(
+      "click",
+      () => {
+        saveData("dhikrCount", 0);
+        updateDhikrDisplay();
+        showToast("Dhikr counter reset", "↺");
+      }
+    );
+  }
+
+  updateFaithPrayerCount();
+  updateDhikrDisplay();
+}
+
+function updateFaithPrayerCount() {
+  const counter = getElement("faithPrayerCount");
+
+  if (!counter) {
+    return;
+  }
+
+  const completed = Array.from(
+    getAll("[data-faith-check]")
+  ).filter(
+    (checkbox) => checkbox.checked
+  ).length;
+
+  counter.textContent = `${completed} / 5`;
+}
+
+function updateDhikrDisplay() {
+  const display = getElement("dhikrCount");
+
+  if (display) {
+    display.textContent =
+      loadData("dhikrCount", 0);
+  }
+}
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+    initializeFounderJournal();
+    initializeFaithTracker();
+  }
+);
