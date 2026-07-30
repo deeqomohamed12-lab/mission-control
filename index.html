@@ -1249,7 +1249,166 @@ Things to remember..."
         data-title="Founder Journal"
         data-eyebrow="Document The Journey"
       >
-        <!-- Founder Journal content will go here -->
+        <div class="dashboard-grid">
+
+  <article class="dashboard-card card-wide">
+
+    <div class="card-header">
+      <div>
+        <p class="eyebrow">Daily Reflection</p>
+        <h3>Founder Journal</h3>
+      </div>
+
+      <span class="card-icon">📖</span>
+    </div>
+
+    <label class="field-label" for="journalWin">
+      What did I accomplish today?
+    </label>
+
+    <textarea
+      class="compact-textarea"
+      id="journalWin"
+      placeholder="Write your wins, even the small ones..."
+    ></textarea>
+
+    <label class="field-label" for="journalLesson">
+      What did I learn?
+    </label>
+
+    <textarea
+      class="compact-textarea"
+      id="journalLesson"
+      placeholder="What lesson should I remember?"
+    ></textarea>
+
+    <label class="field-label" for="journalChallenge">
+      What was difficult?
+    </label>
+
+    <textarea
+      class="compact-textarea"
+      id="journalChallenge"
+      placeholder="What slowed you down or felt hard?"
+    ></textarea>
+
+    <label class="field-label" for="journalTomorrow">
+      What is tomorrow’s brick?
+    </label>
+
+    <textarea
+      class="compact-textarea"
+      id="journalTomorrow"
+      placeholder="Write the one important thing for tomorrow..."
+    ></textarea>
+
+    <div class="card-footer">
+
+      <span class="save-status">
+        <span class="save-dot"></span>
+        Saves automatically
+      </span>
+
+      <button
+        class="primary-button"
+        id="saveJournalButton"
+        type="button"
+      >
+        Save Entry
+      </button>
+
+    </div>
+
+  </article>
+
+  <article class="dashboard-card">
+
+    <div class="card-header">
+      <div>
+        <p class="eyebrow">Mood Check</p>
+        <h3>How Do You Feel?</h3>
+      </div>
+    </div>
+
+    <select
+      class="main-select"
+      id="journalMood"
+    >
+      <option value="">Choose your mood</option>
+      <option value="Proud">😊 Proud</option>
+      <option value="Focused">🎯 Focused</option>
+      <option value="Calm">😌 Calm</option>
+      <option value="Tired">😴 Tired</option>
+      <option value="Overwhelmed">😵 Overwhelmed</option>
+      <option value="Frustrated">😤 Frustrated</option>
+      <option value="Hopeful">🌱 Hopeful</option>
+    </select>
+
+    <label class="field-label" for="journalEnergy">
+      Energy level
+    </label>
+
+    <input
+      class="energy-slider"
+      id="journalEnergy"
+      type="range"
+      min="0"
+      max="100"
+      value="50"
+    >
+
+    <div class="energy-output">
+      <strong id="journalEnergyValue">50%</strong>
+      <span>Today’s energy</span>
+    </div>
+
+  </article>
+
+  <article class="dashboard-card">
+
+    <div class="card-header">
+      <div>
+        <p class="eyebrow">Founder Reminder</p>
+        <h3>Keep Going</h3>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      Progress does not need to look dramatic. One finished brick
+      still moves the whole building forward.
+    </div>
+
+  </article>
+
+  <article class="dashboard-card card-wide">
+
+    <div class="card-header">
+      <div>
+        <p class="eyebrow">Past Entries</p>
+        <h3>Journal History</h3>
+      </div>
+
+      <span
+        class="number-badge"
+        id="journalEntryCount"
+      >
+        0 entries
+      </span>
+    </div>
+
+    <div
+      class="opportunity-list"
+      id="journalHistory"
+    >
+      <div class="empty-state compact-empty">
+        <span>📖</span>
+        <p>Your saved journal entries will appear here.</p>
+      </div>
+    </div>
+
+  </article>
+
+</div>
       </section>
 
       <!-- FAITH -->
