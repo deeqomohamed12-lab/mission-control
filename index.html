@@ -1050,7 +1050,64 @@ Things to remember..."
         data-eyebrow="Creator Research"
       >
       <div class="dashboard-grid">
+<!-- Bulk Import Creators -->
+<article class="dashboard-card card-wide">
 
+  <div class="card-header">
+    <div>
+      <p class="eyebrow">Fast Import</p>
+      <h3>Bulk Import Creators</h3>
+    </div>
+
+    <span class="card-icon">📥</span>
+  </div>
+
+  <p class="bulk-import-help">
+    Paste one Instagram username per line. Mission Control will
+    create all of them as leads automatically.
+  </p>
+
+  <textarea
+    class="large-textarea"
+    id="bulkLeadInput"
+    placeholder="@creatorone
+@creatortwo
+@creatorthree
+@creatorfour"
+  ></textarea>
+
+  <div class="card-footer">
+
+    <span
+      class="number-badge"
+      id="bulkLeadCount"
+    >
+      0 usernames
+    </span>
+
+    <div class="button-group">
+
+      <button
+        class="secondary-button"
+        id="clearBulkLeadButton"
+        type="button"
+      >
+        Clear
+      </button>
+
+      <button
+        class="primary-button"
+        id="importBulkLeadButton"
+        type="button"
+      >
+        Import All
+      </button>
+
+    </div>
+
+  </div>
+
+</article>
   <article class="dashboard-card card-wide">
 
     <div class="card-header">
