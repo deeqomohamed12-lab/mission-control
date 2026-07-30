@@ -1214,3 +1214,173 @@ function renderCreators() {
     creatorList.appendChild(card);
   });
 }
+/* =========================================
+   SCRIPT.JS — PART 5
+   Live CRM Stats and Opportunity Score
+========================================= */
+
+function calculateOpportunityScore(creator) {
+  const followers = Number(creator.followers || 0);
+
+  let score = 10;
+
+  if (followers >= 10000) {
+    score += 20;
+  }
+
+  if (followers >= 100000) {
+    score += 20;
+  }
+
+  if (followers >= 1000000) {
+    score += 25;
+  }
+
+  if (creator.status === "contacted") {
+    score += 5;
+  }
+
+  if (creator.status === "replied") {
+    score += 15;
+  }
+
+  if (creator.status === "client") {
+    score = 100;
+  }
+
+  return Math.min(score, 100);
+}
+
+function updateOpportunityScore() {
+  const creators = loadData("creators", []);
+  const scoreBox = document.querySelector(
+    "#shadow .insight-box"
+  );
+
+  if (!scoreBox) {
+    return;
+  }
+
+  if (!Array.isArray(creators) || creators.length === 0) {
+    scoreBox.textContent =
+      "Once creator data is added, Mission Control will calculate a score to help prioritize outreach.";
+    return;
+  }
+
+  const scoredCreators = creators
+    .map((creator) => ({
+      ...creator,
+      score: calculateOpportunityScore(creator)
+    }))
+    .sort((a, b) => b.score - a.score);
+
+  const bestCreator = scoredCreators[0];
+
+  scoreBox.innerHTML = `
+    <strong>${escapeHtml(bestCreator.name)}</strong>
+    has the highest opportunity score:
+    <strong>${bestCreator.score}/100</strong>.
+    <br><br>
+    Status: ${escapeHtml(bestCreator.status)}
+    <br>
+    Followers:
+    ${Number(bestCreator.followers || 0).toLocaleString("en-US")}
+  `;
+}
+
+function renderBestOpportunities() {
+  const list = getElement("bestOpportunityList");
+  const creators = loadData("creators", []);
+
+  if (!list) {
+    return;
+  }
+
+  if (!Array.isArray(creators) || creators.length === 0) {
+    list.innerHTML = `
+      <div class="empty-state compact-empty">
+        <span>👥</span>
+        <p>Your highest-scoring creator leads will appear here.</p>
+      </div>
+    `;
+    return;
+  }
+
+  const bestCreators = creators
+    .map((creator) => ({
+      ...creator,
+      score: calculateOpportunityScore(creator)
+    }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3);
+
+  list.innerHTML = "";
+
+  bestCreators.forEach((creator) => {
+    const item = document.createElement("div");
+    item.className = "opportunity-item";
+
+    const info = document.createElement("div");
+
+    const name = document.createElement("h4");
+    name.textContent = creator.name;
+
+    const details = document.createElement("p");
+    details.textContent =
+      `${creator.platform} · ` +
+      `${Number(creator.followers || 0).toLocaleString("en-US")} followers`;
+
+    info.appendChild(name);
+    info.appendChild(details);
+
+    const score = document.createElement("span");
+    score.className = "number-badge";
+    score.textContent = `${creator.score}/100`;
+
+    item.appendChild(info);
+    item.appendChild(score);
+    list.appendChild(item);
+  });
+}
+
+function refreshCRMDisplay() {
+  const creators = loadData("creators", []);
+
+  updateCreatorStats(creators);
+  updateOpportunityScore();
+  renderBestOpportunities();
+}
+
+const originalUpdateCreatorStatus =
+  updateCreatorStatus;
+
+updateCreatorStatus = function (creatorId, status) {
+  originalUpdateCreatorStatus(creatorId, status);
+
+  refreshCRMDisplay();
+};
+
+const originalSaveCreatorFromForm =
+  saveCreatorFromForm;
+
+saveCreatorFromForm = function () {
+  originalSaveCreatorFromForm();
+
+  refreshCRMDisplay();
+};
+
+const originalDeleteCreator =
+  deleteCreator;
+
+deleteCreator = function (creatorId) {
+  originalDeleteCreator(creatorId);
+
+  refreshCRMDisplay();
+};
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+    refreshCRMDisplay();
+  }
+);
