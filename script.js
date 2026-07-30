@@ -1908,3 +1908,256 @@ document.addEventListener(
     initializeBulkLeadImport();
   }
 );
+/* =========================================
+   SCRIPT.JS — PART 7
+   Instagram Profile Research
+========================================= */
+
+function getInstagramUsername(value) {
+  return String(value || "")
+    .trim()
+    .replace(
+      /^https?:\/\/(www\.)?instagram\.com\//i,
+      ""
+    )
+    .replace(/[/?#].*$/, "")
+    .replace(/^@/, "")
+    .trim();
+}
+
+function getInstagramProfileUrl(lead) {
+  const username = getInstagramUsername(
+    lead.handle || lead.name
+  );
+
+  if (!username) {
+    return "";
+  }
+
+  return `https://www.instagram.com/${encodeURIComponent(
+    username
+  )}/`;
+}
+
+function openInstagramProfile(leadId) {
+  const leads = loadData("leads", []);
+
+  const lead = leads.find(
+    (item) => Number(item.id) === Number(leadId)
+  );
+
+  if (!lead) {
+    showToast("Creator could not be found", "⚠️");
+    return;
+  }
+
+  const profileUrl = getInstagramProfileUrl(lead);
+
+  if (!profileUrl) {
+    showToast(
+      "Add an Instagram username first",
+      "✍️"
+    );
+    return;
+  }
+
+  window.open(
+    profileUrl,
+    "_blank",
+    "noopener,noreferrer"
+  );
+}
+
+function researchInstagramLead(leadId) {
+  const leads = loadData("leads", []);
+
+  const lead = leads.find(
+    (item) => Number(item.id) === Number(leadId)
+  );
+
+  if (!lead) {
+    return;
+  }
+
+  const updatedName = window.prompt(
+    "Creator’s display name:",
+    lead.name || ""
+  );
+
+  if (updatedName === null) {
+    return;
+  }
+
+  const updatedNiche = window.prompt(
+    "What is this creator’s niche?",
+    lead.niche || ""
+  );
+
+  if (updatedNiche === null) {
+    return;
+  }
+
+  const updatedFollowers = window.prompt(
+    "How many followers do they have? Use the full number, such as 4700000.",
+    lead.followers || ""
+  );
+
+  if (updatedFollowers === null) {
+    return;
+  }
+
+  const updatedNotes = window.prompt(
+    "Add your research notes, product ideas, or audience observations:",
+    lead.researchNotes || ""
+  );
+
+  if (updatedNotes === null) {
+    return;
+  }
+
+  lead.name =
+    updatedName.trim() ||
+    lead.name ||
+    getInstagramUsername(lead.handle);
+
+  lead.niche = updatedNiche.trim();
+
+  lead.followers =
+    Number(
+      String(updatedFollowers).replaceAll(",", "")
+    ) || 0;
+
+  lead.researchNotes = updatedNotes.trim();
+  lead.lastResearchedAt = new Date().toISOString();
+
+  saveData("leads", leads);
+  renderLeadLibrary();
+
+  showToast("Research saved", "🔎");
+}
+
+function addInstagramResearchButtons() {
+  const leads = loadData("leads", []);
+
+  getAll("[data-delete-lead]").forEach(
+    (deleteButton) => {
+      const leadId = Number(
+        deleteButton.dataset.deleteLead
+      );
+
+      const lead = leads.find(
+        (item) => Number(item.id) === leadId
+      );
+
+      if (!lead) {
+        return;
+      }
+
+      const actionCell =
+        deleteButton.closest("td");
+
+      if (
+        !actionCell ||
+        actionCell.querySelector(
+          `[data-open-instagram="${leadId}"]`
+        )
+      ) {
+        return;
+      }
+
+      const openButton =
+        document.createElement("button");
+
+      openButton.type = "button";
+      openButton.className = "small-button";
+      openButton.textContent = "Instagram";
+      openButton.dataset.openInstagram = leadId;
+
+      openButton.addEventListener("click", () => {
+        openInstagramProfile(leadId);
+      });
+
+      const researchButton =
+        document.createElement("button");
+
+      researchButton.type = "button";
+      researchButton.className = "small-button";
+      researchButton.textContent = "Research";
+      researchButton.dataset.researchLead = leadId;
+
+      researchButton.addEventListener(
+        "click",
+        () => {
+          researchInstagramLead(leadId);
+        }
+      );
+
+      actionCell.insertBefore(
+        openButton,
+        deleteButton
+      );
+
+      actionCell.insertBefore(
+        researchButton,
+        deleteButton
+      );
+
+      if (lead.researchNotes) {
+        const creatorCell =
+          actionCell.parentElement?.querySelector(
+            "td:first-child"
+          );
+
+        if (creatorCell) {
+          const note = document.createElement("small");
+
+          note.style.display = "block";
+          note.style.marginTop = "6px";
+          note.style.color = "var(--text-muted)";
+          note.textContent =
+            `Notes: ${lead.researchNotes}`;
+
+          creatorCell.appendChild(note);
+        }
+      }
+    }
+  );
+}
+
+/* Accept links in the single-lead form too. */
+
+const originalSaveLeadWithInstagram =
+  saveLeadFromForm;
+
+saveLeadFromForm = function () {
+  const handleInput = getElement("leadHandle");
+
+  if (handleInput && handleInput.value.trim()) {
+    const username = getInstagramUsername(
+      handleInput.value
+    );
+
+    handleInput.value = username
+      ? `@${username}`
+      : handleInput.value;
+  }
+
+  originalSaveLeadWithInstagram();
+};
+
+/* Add the new buttons whenever the table renders. */
+
+const originalInstagramLeadRender =
+  renderLeadLibrary;
+
+renderLeadLibrary = function () {
+  originalInstagramLeadRender();
+  addInstagramResearchButtons();
+};
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+    renderLeadLibrary();
+  }
+);
