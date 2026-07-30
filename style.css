@@ -855,3 +855,192 @@ body.light-theme .topbar {
     font-size: 1rem;
   }
 }
+
+/* =========================================
+   STYLE.CSS — PART 2A
+   Dashboard Layout and Cards
+========================================= */
+
+.welcome-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+  padding: 28px;
+  overflow: hidden;
+  border: 1px solid rgba(139, 124, 255, 0.2);
+  border-radius: var(--radius-large);
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(139, 124, 255, 0.22),
+      transparent 35%
+    ),
+    linear-gradient(
+      135deg,
+      var(--card),
+      var(--card-soft)
+    );
+  box-shadow: var(--shadow-medium);
+}
+
+.welcome-copy {
+  max-width: 720px;
+}
+
+.welcome-copy h3 {
+  margin-bottom: 8px;
+  color: var(--text);
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  line-height: 1.2;
+}
+
+.welcome-copy p:last-child {
+  max-width: 650px;
+  color: var(--text-soft);
+  font-size: 0.92rem;
+}
+
+.progress-ring {
+  display: grid;
+  width: 132px;
+  height: 132px;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 50%;
+  background:
+    conic-gradient(
+      var(--primary) 0deg,
+      var(--card-soft) 0deg
+    );
+  box-shadow:
+    inset 0 0 0 1px var(--border),
+    0 14px 28px rgba(0, 0, 0, 0.2);
+}
+
+.progress-ring-center {
+  display: flex;
+  width: 98px;
+  height: 98px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--card);
+}
+
+.progress-ring-center strong {
+  color: var(--text);
+  font-size: 1.4rem;
+}
+
+.progress-ring-center span {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.card-wide {
+  grid-column: span 2;
+}
+
+.dashboard-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 16px;
+  padding: 21px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-medium);
+  background:
+    linear-gradient(
+      145deg,
+      var(--card),
+      var(--card-soft)
+    );
+  box-shadow: var(--shadow-small);
+  transition:
+    transform var(--transition),
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.dashboard-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-medium);
+  transform: translateY(-2px);
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.card-header h3 {
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.card-icon {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card-soft);
+  font-size: 1.15rem;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+@media (max-width: 760px) {
+  .welcome-banner {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 21px;
+  }
+
+  .progress-ring {
+    width: 108px;
+    height: 108px;
+  }
+
+  .progress-ring-center {
+    width: 80px;
+    height: 80px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card-wide {
+    grid-column: span 1;
+  }
+
+  .dashboard-card {
+    padding: 17px;
+  }
+
+  .card-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
