@@ -1049,7 +1049,177 @@ Things to remember..."
         data-title="Lead Library"
         data-eyebrow="Creator Research"
       >
-        <!-- Lead Library content will go here -->
+      <div class="dashboard-grid">
+
+  <article class="dashboard-card card-wide">
+
+    <div class="card-header">
+      <div>
+        <p class="eyebrow">Creator Research</p>
+        <h3>Lead Library</h3>
+      </div>
+
+      <button
+        class="primary-button"
+        id="addLeadButton"
+        type="button"
+      >
+        + Add Lead
+      </button>
+    </div>
+
+    <div class="lead-filter-bar">
+
+      <input
+        class="main-input"
+        id="leadSearchInput"
+        type="search"
+        placeholder="Search creators, niches, or platforms..."
+      >
+
+      <select
+        class="main-select"
+        id="leadStatusFilter"
+      >
+        <option value="all">All Statuses</option>
+        <option value="researching">Researching</option>
+        <option value="ready">Ready to Contact</option>
+        <option value="contacted">Contacted</option>
+        <option value="replied">Replied</option>
+        <option value="client">Client</option>
+      </select>
+
+    </div>
+
+  </article>
+
+  <article class="dashboard-card">
+
+    <div class="card-header">
+      <div>
+        <p class="eyebrow">Quick Add</p>
+        <h3>New Lead</h3>
+      </div>
+    </div>
+
+    <input
+      class="main-input"
+      id="leadName"
+      type="text"
+      placeholder="Creator name"
+    >
+
+    <input
+      class="main-input"
+      id="leadHandle"
+      type="text"
+      placeholder="@username"
+    >
+
+    <input
+      class="main-input"
+      id="leadNiche"
+      type="text"
+      placeholder="Niche"
+    >
+
+    <input
+      class="main-input"
+      id="leadFollowers"
+      type="number"
+      placeholder="Follower count"
+    >
+
+    <select
+      class="main-select"
+      id="leadPlatform"
+    >
+      <option value="">Choose platform</option>
+      <option value="Instagram">Instagram</option>
+      <option value="TikTok">TikTok</option>
+      <option value="YouTube">YouTube</option>
+      <option value="X">X</option>
+      <option value="LinkedIn">LinkedIn</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <button
+      class="primary-button full-button"
+      id="saveLeadButton"
+      type="button"
+    >
+      Save Lead
+    </button>
+
+  </article>
+
+  <article class="dashboard-card">
+
+    <div class="card-header">
+      <div>
+        <p class="eyebrow">Lead Health</p>
+        <h3>Library Stats</h3>
+      </div>
+    </div>
+
+    <div class="mini-stat-list">
+
+      <div class="mini-stat">
+        <span>Total Leads</span>
+        <strong id="libraryTotalLeads">0</strong>
+      </div>
+
+      <div class="mini-stat">
+        <span>Ready</span>
+        <strong id="libraryReadyLeads">0</strong>
+      </div>
+
+      <div class="mini-stat">
+        <span>Contacted</span>
+        <strong id="libraryContactedLeads">0</strong>
+      </div>
+
+      <div class="mini-stat">
+        <span>Clients</span>
+        <strong id="libraryClientLeads">0</strong>
+      </div>
+
+    </div>
+
+  </article>
+
+  <article class="dashboard-card card-wide">
+
+    <div class="card-header">
+      <div>
+        <p class="eyebrow">Saved Research</p>
+        <h3>Creator Leads</h3>
+      </div>
+
+      <span
+        class="number-badge"
+        id="visibleLeadCount"
+      >
+        0 leads
+      </span>
+    </div>
+
+    <div
+      class="lead-table-wrapper"
+      id="leadTableWrapper"
+    >
+
+      <div class="empty-state">
+        <span>📚</span>
+        <h4>Your lead library is empty</h4>
+        <p>Add creator leads here so you can research, score, contact, and follow up without losing anyone.</p>
+      </div>
+
+    </div>
+
+  </article>
+
+</div>
       </section>
 
       <!-- DEENAS -->
