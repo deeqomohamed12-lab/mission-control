@@ -2756,3 +2756,195 @@ document.addEventListener(
     updateConnectedBrainInsight();
   }
 );
+/* =========================================
+   OUTREACH HUB — PART 2
+   Connect Lead Library to Outreach Hub
+========================================= */
+
+function renderOutreachHub() {
+  const leads = loadData("leads", []);
+
+  const sentStatuses = [
+    "contacted",
+    "replied",
+    "follow-up",
+    "call-scheduled",
+    "client"
+  ];
+
+  const outreachSent = leads.filter((lead) =>
+    sentStatuses.includes(
+      String(lead.status || "").toLowerCase()
+    )
+  );
+
+  const waitingForReply = leads.filter(
+    (lead) =>
+      String(lead.status || "").toLowerCase() ===
+      "contacted"
+  );
+
+  const replies = leads.filter(
+    (lead) =>
+      String(lead.status || "").toLowerCase() ===
+      "replied"
+  );
+
+  const calls = leads.filter(
+    (lead) =>
+      String(lead.status || "").toLowerCase() ===
+      "call-scheduled"
+  );
+
+  const clients = leads.filter(
+    (lead) =>
+      String(lead.status || "").toLowerCase() ===
+      "client"
+  );
+
+  const setCount = (id, value) => {
+    const element = getElement(id);
+
+    if (element) {
+      element.textContent = value;
+    }
+  };
+
+  setCount(
+    "outreachSentCount",
+    outreachSent.length
+  );
+
+  setCount(
+    "waitingReplyCount",
+    waitingForReply.length
+  );
+
+  setCount(
+    "newReplyCount",
+    replies.length
+  );
+
+  setCount(
+    "callScheduledCount",
+    calls.length
+  );
+
+  setCount(
+    "outreachClientCount",
+    clients.length
+  );
+
+  renderReplyInbox(replies);
+  renderOutreachQueue(waitingForReply);
+}
+
+function renderReplyInbox(replies) {
+  const inbox = getElement("replyInbox");
+
+  if (!inbox) {
+    return;
+  }
+
+  if (replies.length === 0) {
+    inbox.innerHTML = `
+      <div class="empty-state compact-empty">
+        <span>💬</span>
+        <p>New replies will appear here.</p>
+      </div>
+    `;
+
+    return;
+  }
+
+  inbox.innerHTML = replies
+    .map((lead) => {
+      return `
+        <div class="opportunity-item">
+          <div>
+            <strong>
+              ${escapeHtml(
+                lead.name ||
+                lead.handle ||
+                "Creator"
+              )}
+            </strong>
+
+            <p>
+              ${escapeHtml(
+                lead.handle || ""
+              )}
+            </p>
+          </div>
+
+          <span class="number-badge">
+            Replied
+          </span>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function renderOutreachQueue(waitingLeads) {
+  const queue = getElement("outreachQueue");
+  const counter = getElement(
+    "outreachQueueCount"
+  );
+
+  if (counter) {
+    counter.textContent =
+      `${waitingLeads.length} ` +
+      `${waitingLeads.length === 1
+        ? "person"
+        : "people"}`;
+  }
+
+  if (!queue) {
+    return;
+  }
+
+  if (waitingLeads.length === 0) {
+    queue.innerHTML = `
+      <div class="empty-state compact-empty">
+        <span>📭</span>
+        <p>No outreach actions are due yet.</p>
+      </div>
+    `;
+
+    return;
+  }
+
+  queue.innerHTML = waitingLeads
+    .map((lead) => {
+      return `
+        <div class="opportunity-item">
+          <div>
+            <strong>
+              ${escapeHtml(
+                lead.name ||
+                lead.handle ||
+                "Creator"
+              )}
+            </strong>
+
+            <p>
+              Waiting for reply
+            </p>
+          </div>
+
+          <span class="number-badge">
+            Contacted
+          </span>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+    renderOutreachHub();
+  }
+);
