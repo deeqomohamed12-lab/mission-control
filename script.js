@@ -1683,14 +1683,37 @@ function updateLeadStatus(leadId, status) {
   if (!lead) {
     return;
   }
+lead.status = status;
 
-  lead.status = status;
-  saveData("leads", leads);
+if (
+  status === "contacted" &&
+  !lead.firstOutreachAt
+) {
+  lead.firstOutreachAt =
+    new Date().toISOString();
 
-  renderLeadLibrary();
-  renderOutreachHub();
-  showToast("Lead status updated", "✓");
+  lead.followUpAt =
+    addDaysToDate(
+      lead.firstOutreachAt,
+      4
+    );
 }
+
+if (
+  status === "replied" ||
+  status === "client"
+) {
+  lead.followUpAt = null;
+}
+
+saveData("leads", leads);
+
+renderLeadLibrary();
+renderOutreachHub();
+updateFollowUpCounter();
+
+showToast("Lead status updated", "✓");
+  }
 
 function deleteLead(leadId) {
   const confirmed = window.confirm(
