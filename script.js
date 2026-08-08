@@ -1688,6 +1688,7 @@ function updateLeadStatus(leadId, status) {
   saveData("leads", leads);
 
   renderLeadLibrary();
+  renderOutreachHub();
   showToast("Lead status updated", "✓");
 }
 
