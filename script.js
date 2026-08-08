@@ -2948,3 +2948,68 @@ document.addEventListener(
     renderOutreachHub();
   }
 );
+/* =========================================
+   OUTREACH HUB — PART 3
+   Outreach Dates and Follow-Ups
+========================================= */
+
+function addDaysToDate(dateValue, numberOfDays) {
+  const date = new Date(dateValue);
+
+  date.setDate(date.getDate() + numberOfDays);
+
+  return date.toISOString();
+}
+
+function getTodayDateOnly() {
+  const now = new Date();
+
+  return new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate()
+  );
+}
+
+function getFollowUpLeads() {
+  const leads = loadData("leads", []);
+  const today = getTodayDateOnly();
+
+  return leads.filter((lead) => {
+    if (!lead.followUpAt) {
+      return false;
+    }
+
+    if (
+      lead.status === "replied" ||
+      lead.status === "client"
+    ) {
+      return false;
+    }
+
+    const followUpDate = new Date(
+      lead.followUpAt
+    );
+
+    const followUpDay = new Date(
+      followUpDate.getFullYear(),
+      followUpDate.getMonth(),
+      followUpDate.getDate()
+    );
+
+    return followUpDay <= today;
+  });
+}
+
+function updateFollowUpCounter() {
+  const followUpLeads = getFollowUpLeads();
+
+  const counter = getElement(
+    "followUpTodayCount"
+  );
+
+  if (counter) {
+    counter.textContent =
+      followUpLeads.length;
+  }
+}
