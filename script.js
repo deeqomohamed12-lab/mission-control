@@ -1707,6 +1707,7 @@ function deleteLead(leadId) {
   saveData("leads", leads);
 
   renderLeadLibrary();
+  renderOutreachHub();
   showToast("Lead deleted", "🗑️");
 }
 
