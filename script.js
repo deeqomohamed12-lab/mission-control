@@ -3038,3 +3038,38 @@ function updateFollowUpCounter() {
       followUpLeads.length;
   }
 }
+
+/* =========================================
+   OUTREACH HUB — PART 3B
+   Fix Existing Contacted Leads
+========================================= */
+
+function migrateExistingContactedLeads() {
+  const leads = loadData("leads", []);
+  let changed = false;
+
+  leads.forEach((lead) => {
+    if (lead.status === "contacted" && !lead.followUpAt) {
+      const outreachDate =
+        lead.firstOutreachAt ||
+        lead.contactedAt ||
+        lead.createdAt ||
+        new Date().toISOString();
+
+      lead.firstOutreachAt = outreachDate;
+      lead.followUpAt = addDaysToDate(outreachDate, 4);
+
+      changed = true;
+    }
+  });
+
+  if (changed) {
+    saveData("leads", leads);
+  }
+
+  updateFollowUpCounter();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  migrateExistingContactedLeads();
+});
