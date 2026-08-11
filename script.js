@@ -3120,3 +3120,30 @@ function markFollowUpComplete(leadId) {
 
   showToast("Follow-up completed", "✓");
 }
+/* =========================================
+   OUTREACH HUB — PART 5
+   Mark Creator As Replied
+========================================= */
+
+function markLeadReplied(leadId) {
+  const leads = loadData("leads", []);
+
+  const lead = leads.find(
+    (item) => item.id === leadId
+  );
+
+  if (!lead) {
+    return;
+  }
+
+  lead.status = "replied";
+  lead.repliedAt = new Date().toISOString();
+
+  saveData("leads", leads);
+
+  renderLeadLibrary();
+  renderOutreachHub();
+  updateFollowUpCounter();
+
+  showToast("Reply recorded! 🎉");
+}
