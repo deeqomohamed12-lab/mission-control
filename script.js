@@ -1132,7 +1132,7 @@ document.addEventListener(
 
 function renderCreators() {
   const creatorList = getElement("creatorList");
-  const creators = loadData("creators", []);
+  const creators = loadData("leads", []);
 
   updateCreatorStats(creators);
 
