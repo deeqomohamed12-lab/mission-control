@@ -3073,3 +3073,35 @@ function migrateExistingContactedLeads() {
 document.addEventListener("DOMContentLoaded", () => {
   migrateExistingContactedLeads();
 });
+
+/* ==========================================
+   OUTREACH HUB — PART 4
+   Mark Follow-Up Complete
+========================================== */
+
+function markFollowUpComplete(leadId) {
+  const leads = loadData("leads", []);
+
+  const lead = leads.find(
+    (item) => item.id === leadId
+  );
+
+  if (!lead) {
+    return;
+  }
+
+  lead.lastFollowUpAt = new Date().toISOString();
+
+  lead.followUpAt = addDaysToDate(
+    lead.lastFollowUpAt,
+    4
+  );
+
+  saveData("leads", leads);
+
+  renderLeadLibrary();
+  renderOutreachHub();
+  updateFollowUpCounter();
+
+  showToast("Follow-up completed", "✓");
+}
