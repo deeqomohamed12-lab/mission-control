@@ -946,7 +946,7 @@ function saveCreatorFromForm() {
 
 function renderCreators() {
   const creatorList = getElement("creatorList");
-  const creators = loadData("creators", []);
+  const creators = loadData("leads", []);
 
   updateCreatorStats(creators);
 
@@ -1048,7 +1048,7 @@ function renderCreators() {
 }
 
 function updateCreatorStatus(creatorId, status) {
-  const creators = loadData("creators", []);
+  const creators = loadData("leads", []);
 
   const creator = creators.find(
     (item) => item.id === creatorId
@@ -1059,7 +1059,7 @@ function updateCreatorStatus(creatorId, status) {
   }
 
   creator.status = status;
-  saveData("creators", creators);
+  saveData("leads", creators);
 
   renderCreators();
   showToast("Creator status updated", "✓");
@@ -1074,10 +1074,11 @@ function deleteCreator(creatorId) {
     return;
   }
 
-  const creators = loadData("creators", [])
-    .filter((creator) => creator.id !== creatorId);
+  const creators = loadData("leads", [])
+  .filter((creator) => creator.id !== creatorId);
+    
 
-  saveData("creators", creators);
+  saveData("leads", creators);
 
   renderCreators();
   showToast("Creator deleted", "🗑️");
