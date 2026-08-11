@@ -3123,6 +3123,8 @@ function markFollowUpComplete(leadId) {
 /* =========================================
    OUTREACH HUB — PART 5
    Mark Creator As Replied
+
+   
 ========================================= */
 
 function markLeadReplied(leadId) {
@@ -3138,6 +3140,7 @@ function markLeadReplied(leadId) {
 
   lead.status = "replied";
   lead.repliedAt = new Date().toISOString();
+  lead.followUpAt = null;
 
   saveData("leads", leads);
 
