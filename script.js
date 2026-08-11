@@ -2861,7 +2861,7 @@ function renderOutreachHub() {
   );
 
   renderReplyInbox(replies);
-  renderOutreachQueue(waitingForReply);
+  renderOutreachQueue(getFollowUpLeads());
 }
 
 function renderReplyInbox(replies) {
@@ -2958,15 +2958,30 @@ function renderOutreachQueue(waitingLeads) {
             </p>
           </div>
 
-          <span class="number-badge">
-            Contacted
-          </span>
+          <button
+  class="small-button"
+  type="button"
+  data-follow-up-complete="${lead.id}"
+>
+  ✓ Followed Up
+</button>
+            
+          
         </div>
       `;
     })
     .join("");
-}
 
+getAll("[data-follow-up-complete]").forEach(
+  (button) => {
+    button.addEventListener("click", () => {
+      markFollowUpComplete(
+        Number(button.dataset.followUpComplete)
+      );
+    });
+  }
+);
+}
 document.addEventListener(
   "DOMContentLoaded",
   () => {
